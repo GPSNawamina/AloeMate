@@ -176,38 +176,38 @@ Develop a holistic AI-integrated system to support Aloe Vera farmers in Sri Lank
 ### 📐 Architectural Diagram (High Level)
 ```mermaid
 flowchart LR
-  Farmer((Farmer)) --> Mobile[Mobile App\nReact Native + Expo]
+  Farmer((Farmer)) --> Mobile["Mobile App<br/>React Native + Expo"]
 
-  subgraph M1[Component 1: Disease/Defect Detection + Treatment]
-    Mobile --> Capture[Multi-Photo Capture\n(1-3 images)]
-    Capture --> QC[Image Quality Checks\n(blur/brightness)]
-    QC --> Model[AI Inference\nCNN / PyTorch / TFLite]
-    Model --> Calib[Calibration\nTemperature Scaling]
-    Calib --> Top3[Top-3 Predictions + Confidence]
-    Top3 --> Treat[Treatment Guidance\nScientific + Ayurvedic]
+  subgraph M1["Component 1: Disease/Defect Detection + Treatment"]
+    Mobile --> Capture["Multi-Photo Capture<br/>(1–3 images)"]
+    Capture --> QC["Image Quality Checks<br/>(blur/brightness)"]
+    QC --> Model["AI Inference<br/>CNN / PyTorch / TFLite"]
+    Model --> Calib["Calibration<br/>Temperature Scaling"]
+    Calib --> Top3["Top-3 Predictions<br/>+ Confidence"]
+    Top3 --> Treat["Treatment Guidance<br/>Scientific + Ayurvedic"]
   end
 
-  subgraph M2[Component 2: IoT Monitoring + Disease Risk Alerts]
-    Sensors[IoT Sensors\nTemp/Humidity/Soil Moisture] --> Edge[ESP32 Device]
-    Edge --> Cloud[Cloud Storage/Processing]
-    Cloud --> Risk[Risk Classification\nLow/Med/High]
-    Risk --> Alerts[SMS/WhatsApp Alerts\nSinhala/English]
+  subgraph M2["Component 2: IoT Monitoring + Disease Risk Alerts"]
+    Sensors["IoT Sensors<br/>Temp / Humidity / Soil Moisture"] --> Edge["ESP32 Device"]
+    Edge --> Cloud["Cloud Storage / Processing"]
+    Cloud --> Risk["Risk Classification<br/>Low / Medium / High"]
+    Risk --> Alerts["SMS / WhatsApp Alerts<br/>Sinhala / English"]
   end
 
-  subgraph M3[Component 3: AI Chatbot + Scheduler]
-    Mobile --> Chat[Voice/Text Chat UI]
-    Chat --> NLP[NLP + ASR + NER]
-    NLP --> KB[Knowledge Base\nScientific + Traditional]
-    KB --> Rec[Recommendations]
-    Rec --> Sched[Treatment Scheduling + Reminders]
+  subgraph M3["Component 3: AI Chatbot + Scheduler"]
+    Mobile --> Chat["Voice / Text Chat UI"]
+    Chat --> NLP["NLP + ASR + NER"]
+    NLP --> KB["Knowledge Base<br/>Scientific + Traditional"]
+    KB --> Rec["Recommendations"]
+    Rec --> Sched["Treatment Scheduling<br/>+ Reminders"]
   end
 
-  subgraph M4[Component 4: Harvest Predictor + Market Trends]
-    Mobile --> HImg[Maturity Image Input]
-    HImg --> StageCls[CNN Classifier\nPre/Inter/Mature]
-    StageCls --> Reg[Regression\nDays-to-Maturity]
-    MarketAPI[Market Price API] --> Market[Market Trend Analyzer]
-    Reg --> Harvest[Optimal Harvest Window]
+  subgraph M4["Component 4: Harvest Predictor + Market Trends"]
+    Mobile --> HImg["Maturity Image Input"]
+    HImg --> StageCls["CNN Classifier<br/>Pre / Inter / Mature"]
+    StageCls --> Reg["Regression<br/>Days-to-Maturity"]
+    MarketAPI["Market Price API"] --> Market["Market Trend Analyzer"]
+    Reg --> Harvest["Optimal Harvest Window"]
     Market --> Harvest
   end
 

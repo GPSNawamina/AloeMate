@@ -10,35 +10,29 @@ It combines **Computer Vision + IoT + Conversational AI + Market Trend Analytics
 ---
 
 ## 🧾 Table of Contents
-- [Project Name + Short Description](#-project-name--short-description)
-- [Project Overview](#-project-overview)
-- [Problem Statement](#-problem-statement)
-- [Project Objectives](#-project-objectives)
-- [Expected Outcomes](#-expected-outcomes)
-- [System Components](#-system-components)
+- [🌿 AloeMate — AI-Powered Smart Farming Platform for Aloe Vera](#-aloemate--ai-powered-smart-farming-platform-for-aloe-vera)
+- [🔗 Repository](#-repository)
+- [🧾 Table of Contents](#-table-of-contents)
+- [✨ Project Name + Short Description](#-project-name--short-description)
+- [📌 Project Overview](#-project-overview)
+- [❗ Problem Statement](#-problem-statement)
+- [🎯 Project Objectives](#-project-objectives)
+- [✅ Expected Outcomes](#-expected-outcomes)
+- [🧩 System Components](#-system-components)
   - [Component 1: Disease/Defect Detection + Treatment Guidance](#component-1-diseasedefect-detection--treatment-guidance)
   - [Component 2: IoT Monitoring + Disease Risk Alerts](#component-2-iot-monitoring--disease-risk-alerts)
   - [Component 3: AI Chatbot + Treatment Scheduler](#component-3-ai-chatbot--treatment-scheduler)
   - [Component 4: Market Trend–Based Harvest Predictor](#component-4-market-trendbased-harvest-predictor)
-- [Accessibility & Inclusive Design](#-accessibility--inclusive-design)
-- [System Architecture](#-system-architecture)
-  - [Architectural Diagram (High Level)](#-architectural-diagram-high-level)
-- [Technologies Used](#-technologies-used)
-- [Requirements / Dependencies](#-requirements--dependencies)
-- [Project Structure](#-project-structure)
-- [Configuration](#-configuration)
-  - [Backend `.env`](#backend-env)
-  - [Mobile `.env`](#mobile-env)
-  - [IoT `.env` / config](#iot-env--config)
-- [Setup Instructions](#-setup-instructions)
-- [How to Run](#-how-to-run)
-- [How to Test](#-how-to-test)
-- [Deployment Notes](#-deployment-notes)
-- [Other Dependencies (External Services)](#-other-dependencies-external-services)
-- [Git Workflow: Commits, Branches, Merges](#-git-workflow-commits-branches-merges)
-- [Demo Link / Credentials](#-demo-link--credentials)
-- [Contributors](#-contributors)
-- [License](#-license)
+- [♿ Accessibility & Inclusive Design](#-accessibility--inclusive-design)
+  - [👁️ Visual Impairment Support](#-visual-impairment-support)
+  - [👂 Hearing Impairment Support](#-hearing-impairment-support)
+  - [🧠 Cognitive & Learning Difficulties Support](#-cognitive--learning-difficulties-support)
+- [🛠️ Technologies Used](#-technologies-used)
+- [📦 Requirements / Dependencies](#-requirements--dependencies)
+- [📁 Project Structure](#-project-structure)
+- [🏗️ System Architecture](#-system-architecture)
+  - [📐 Architectural Diagram (High Level)](#-architectural-diagram-high-level)
+
 
 ---
 
@@ -168,6 +162,71 @@ Develop a holistic AI-integrated system to support Aloe Vera farmers in Sri Lank
 - Confidence-based decision flow
 - Consistent navigation with minimal clutter UI
 - Clear badges and progress indicators
+
+---
+
+## 🛠️ Technologies Used
+
+### 📱 Mobile
+- React Native + Expo
+- TypeScript
+- Expo Router
+- expo-camera
+- Axios
+
+### 🧩 Backend / APIs
+- FastAPI (model serving + endpoints)
+- (Optional future expansion) Node.js/Express
+- Uvicorn
+- Pydantic
+
+### 🧠 AI/ML
+- PyTorch / TensorFlow Lite
+- CNN models (EfficientNet/MobileNet)
+- Temperature scaling calibration
+- OpenCV (image preprocessing)
+
+### 📡 IoT
+- ESP32 / Arduino
+- DHT22 (temp/humidity)
+- Soil moisture sensor
+- MQTT / HTTP
+
+### ☁️ Cloud / Storage (Future)
+- AWS (future)
+- Firebase (future optional)
+- Time-series DB (future optional)
+
+---
+
+## 📦 Requirements / Dependencies
+
+### ✅ Required
+- Python >= 3.10
+- Node.js >= 18
+- npm / yarn
+- Expo Go (for mobile testing)
+- Git
+
+### ⭐ Optional (Recommended for training)
+- CUDA-capable GPU for faster model training
+
+---
+
+## 📁 Project Structure
+
+```text
+AloeMate/
+├── apps/
+│   ├── mobile/                # React Native Expo app
+│   ├── server/                # FastAPI backend
+│   ├── training/              # Model training + calibration
+│   └── iot-firmware/          # ESP32 firmware (future module)
+├── docs/                      # Architecture, diagrams, research references
+└── README.md
+
+```
+
 
 ---
 

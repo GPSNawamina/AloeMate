@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import Button from '../components/Button';
 import ProgressBar from '../components/ProgressBar';
@@ -72,6 +73,36 @@ export default function CameraCaptureScreen() {
       }
     } catch (error) {
       Alert.alert('Error', 'Failed to take picture. Please try again.');
+    }
+  };
+
+  const pickImageFromGallery = async () => {
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permission Required',
+          'Please grant gallery access to select images.'
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        const newPhotos = [...photos];
+        newPhotos[currentStage] = { uri: result.assets[0].uri, stage: currentStage + 1 };
+        setPhotos(newPhotos);
+        setShowPreview(true);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to select image. Please try again.');
     }
   };
 
@@ -187,7 +218,9 @@ export default function CameraCaptureScreen() {
           <View style={styles.captureButtonInner} />
         </TouchableOpacity>
 
-        <View style={styles.placeholder} />
+        <TouchableOpacity style={styles.galleryButton} onPress={pickImageFromGallery}>
+          <Text style={styles.galleryText}>🖼️</Text>
+        </TouchableOpacity>
       </View>
 
       {currentStage > 0 && (
@@ -296,8 +329,14 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: '#4CAF50',
   },
-  placeholder: {
+  galleryButton: {
     width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  galleryText: {
+    fontSize: 28,
   },
   preview: {
     flex: 1,

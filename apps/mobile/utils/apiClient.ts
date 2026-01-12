@@ -129,8 +129,27 @@ async function apiCall<T>(
       // Don't retry client errors (4xx)
       if (axiosError.response && axiosError.response.status >= 400 && axiosError.response.status < 500) {
         const errorData = axiosError.response.data as any;
+        const detail = errorData?.detail;
+        let errorMessage = 'Invalid request';
+        
+        if (typeof detail === 'string') {
+          errorMessage = detail;
+        } else if (Array.isArray(detail)) {
+          // Handle FastAPI validation errors
+          errorMessage = detail.map(err => {
+            if (typeof err === 'string') return err;
+            if (err.msg) return err.msg;
+            if (err.message) return err.message;
+            return JSON.stringify(err);
+          }).join(', ');
+        } else if (detail && typeof detail === 'object') {
+          if (detail.message) errorMessage = detail.message;
+          else if (detail.msg) errorMessage = detail.msg;
+          else errorMessage = JSON.stringify(detail);
+        }
+        
         throw new ApiError(
-          errorData?.detail || 'Invalid request',
+          errorMessage,
           axiosError.response.status,
           error
         );
@@ -173,15 +192,31 @@ export const apiClient = {
     const imageFields = ['image1', 'image2', 'image3'];
     for (let i = 0; i < imageUris.length && i < 3; i++) {
       const uri = imageUris[i];
-      const fileName = uri.split('/').pop() || `photo_${i + 1}.jpg`;
-      const fileType = `image/${fileName.split('.').pop() || 'jpg'}`;
 
-      // Expo FormData format
-      formData.append(imageFields[i], {
-        uri,
-        type: fileType,
-        name: fileName,
-      } as any);
+      // Check if running on web
+      if (typeof window !== 'undefined' && uri.startsWith('blob:')) {
+        // Web: Convert blob URI to actual Blob/File
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        
+        // Determine file extension from blob type
+        const blobType = blob.type || 'image/jpeg';
+        const extension = blobType.split('/')[1] || 'jpg';
+        const fileName = `photo_${i + 1}.${extension}`;
+        
+        const file = new File([blob], fileName, { type: blobType });
+        formData.append(imageFields[i], file);
+      } else {
+        // React Native: Use Expo FormData format
+        const fileName = uri.split('/').pop() || `photo_${i + 1}.jpg`;
+        const fileType = `image/${fileName.split('.').pop() || 'jpg'}`;
+        
+        formData.append(imageFields[i], {
+          uri,
+          type: fileType,
+          name: fileName,
+        } as any);
+      }
     }
 
     return apiCall<PredictResponse>({
@@ -236,15 +271,30 @@ export const apiClient = {
   ): Promise<CardDetectionResponse> {
     const formData = new FormData();
     
-    // Prepare image file
-    const fileName = imageUri.split('/').pop() || 'harvest_image.jpg';
-    const fileType = `image/${fileName.split('.').pop() || 'jpg'}`;
-    
-    formData.append('image', {
-      uri: imageUri,
-      type: fileType,
-      name: fileName,
-    } as any);
+    // Check if running on web
+    if (typeof window !== 'undefined' && imageUri.startsWith('blob:')) {
+      // Web: Convert blob URI to actual Blob/File
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+      
+      // Determine file extension from blob type
+      const blobType = blob.type || 'image/jpeg';
+      const extension = blobType.split('/')[1] || 'jpg';
+      const fileName = `harvest_image.${extension}`;
+      
+      const file = new File([blob], fileName, { type: blobType });
+      formData.append('image', file);
+    } else {
+      // React Native: Use Expo FormData format
+      const fileName = imageUri.split('/').pop() || 'harvest_image.jpg';
+      const fileType = `image/${fileName.split('.').pop() || 'jpg'}`;
+      
+      formData.append('image', {
+        uri: imageUri,
+        type: fileType,
+        name: fileName,
+      } as any);
+    }
     
     // Add optional crop quad
     if (cropQuad && cropQuad.length === 4) {
@@ -285,15 +335,30 @@ export const apiClient = {
     
     const formData = new FormData();
     
-    // Prepare image file
-    const fileName = imageUri.split('/').pop() || 'harvest_image.jpg';
-    const fileType = `image/${fileName.split('.').pop() || 'jpg'}`;
-    
-    formData.append('image', {
-      uri: imageUri,
-      type: fileType,
-      name: fileName,
-    } as any);
+    // Check if running on web
+    if (typeof window !== 'undefined' && imageUri.startsWith('blob:')) {
+      // Web: Convert blob URI to actual Blob/File
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+      
+      // Determine file extension from blob type
+      const blobType = blob.type || 'image/jpeg';
+      const extension = blobType.split('/')[1] || 'jpg';
+      const fileName = `harvest_image.${extension}`;
+      
+      const file = new File([blob], fileName, { type: blobType });
+      formData.append('image', file);
+    } else {
+      // React Native: Use Expo FormData format
+      const fileName = imageUri.split('/').pop() || 'harvest_image.jpg';
+      const fileType = `image/${fileName.split('.').pop() || 'jpg'}`;
+      
+      formData.append('image', {
+        uri: imageUri,
+        type: fileType,
+        name: fileName,
+      } as any);
+    }
     
     // Add required parameters
     formData.append('card_corners', JSON.stringify(cardCorners));
@@ -336,6 +401,21 @@ export function getErrorMessage(error: unknown): string {
       const detail = (error.response.data as any)?.detail;
       if (typeof detail === 'string') {
         return detail;
+      }
+      // Handle array of error details (common in FastAPI validation errors)
+      if (Array.isArray(detail)) {
+        return detail.map(err => {
+          if (typeof err === 'string') return err;
+          if (err.msg) return err.msg;
+          if (err.message) return err.message;
+          return JSON.stringify(err);
+        }).join(', ');
+      }
+      // Handle object error details
+      if (detail && typeof detail === 'object') {
+        if (detail.message) return detail.message;
+        if (detail.msg) return detail.msg;
+        return JSON.stringify(detail);
       }
       return `Server error: ${error.response.status}`;
     }

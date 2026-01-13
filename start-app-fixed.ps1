@@ -11,7 +11,7 @@ Write-Host "========================================`n" -ForegroundColor Cyan
 Write-Host "Working Directory: $rootDir`n" -ForegroundColor Gray
 
 # Step 1: Start Backend Server
-Write-Host "ðŸ“¡ Starting Backend Server..." -ForegroundColor Yellow
+Write-Host "[SERVER] Starting Backend Server..." -ForegroundColor Yellow
 $backendPath = Join-Path $rootDir "apps\server"
 $backendJob = Start-Job -ScriptBlock {
     param($path)
@@ -21,22 +21,22 @@ $backendJob = Start-Job -ScriptBlock {
 Write-Host "   Backend started (Job ID: $($backendJob.Id))" -ForegroundColor Gray
 
 # Step 2: Wait for Backend Health Check
-Write-Host "`nâ³ Waiting for backend to be ready..." -ForegroundColor Yellow
+Write-Host "`n[WAIT] Waiting for backend to be ready..." -ForegroundColor Yellow
 Start-Sleep -Seconds 8
 
 try {
     $health = Invoke-WebRequest http://localhost:8000/health -UseBasicParsing | ConvertFrom-Json
-    Write-Host "`nâœ“ Backend Server: RUNNING" -ForegroundColor Green
+    Write-Host "`n[OK] Backend Server: RUNNING" -ForegroundColor Green
     Write-Host "  Status: $($health.status)" -ForegroundColor Cyan
     Write-Host "  Version: $($health.version)" -ForegroundColor Cyan
     Write-Host "  Port: 8000" -ForegroundColor Cyan
     Write-Host "  Aloe Vera Detection: ENABLED" -ForegroundColor Yellow
 } catch {
-    Write-Host "`nâš  Backend health check failed, but continuing..." -ForegroundColor Yellow
+    Write-Host "`n[WARNING] Backend health check failed, but continuing..." -ForegroundColor Yellow
 }
 
 # Step 3: Start Frontend Mobile App
-Write-Host "`nðŸ“± Starting Mobile App (Expo)..." -ForegroundColor Yellow
+Write-Host "`n[MOBILE] Starting Mobile App (Expo)..." -ForegroundColor Yellow
 $mobilePath = Join-Path $rootDir "apps\mobile"
 Set-Location $mobilePath
 
@@ -50,8 +50,8 @@ Write-Host "Frontend: Starting Expo...`n" -ForegroundColor Cyan
 npx expo start --clear
 
 # Cleanup when Expo exits (Ctrl+C)
-Write-Host "`nðŸ›‘ Stopping backend server..." -ForegroundColor Yellow
+Write-Host "`n[STOP] Stopping backend server..." -ForegroundColor Yellow
 Stop-Job -Id $backendJob.Id
 Remove-Job -Id $backendJob.Id
-Write-Host "âœ“ All services stopped" -ForegroundColor Green
+Write-Host "[OK] All services stopped" -ForegroundColor Green
 
